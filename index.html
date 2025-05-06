@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Choice Game</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: OpenDyslexic, sans-serif;
+      font-size: 26px;
+      cursor: url('cursor-revised.png') 1 1, auto;
+    }
+
+    table {
+      min-width: 800px;
+      cursor: url('cursor-revised.png') 1 1, auto;
+      text-align: center;
+      border-collapse: collapse;
+    }
+
+    tr {
+      border: none;
+    }
+
+    td {
+      padding: 2px;
+      border: none;
+    }
+
+    td.picture {
+      width: 650px;
+    }
+
+    button {
+      height: 30px;
+      border: 2px solid black;
+      border-radius: 5px;
+      font-family: OpenDyslexic, sans-serif;
+      background-color: #ffff58;
+    }    
+
+    .choice {
+      cursor: url('cursor-revised.png') 1 1, auto;
+      background-color: #f0f0f0;
+      transition: background-color 0.3s;
+      height: 70px;
+      border: 2px solid black;
+    }
+
+    .choice:hover {
+      background-color: #ffff58;
+    }
+
+    .message {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .correct {
+      color: green;
+    }
+
+    .wrong {
+      color: red;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    img.promptimg {
+      max-height: 450px;
+      border-radius: 10px;
+    }
+
+    .description {
+      font-size: 32px;
+      margin-bottom: 10px;
+      width: 350px;
+    }
+  </style>
+</head>
+<body>
+
+  <table>
+    <tr>
+      <td rowspan="5" class="picture"><img id="prompt-img" src="1.jpeg" alt="prompt" class="promptimg"></td>
+      <td class="description" id="description-text"></td>
+    </tr>
+    <tr>
+      <td class="choice" onclick="checkAnswer(0)">Pilihan A</td>
+    </tr>
+    <tr>
+      <td class="choice" onclick="checkAnswer(1)">Pilihan B</td>
+    </tr>
+    <tr>
+      <td class="choice" onclick="checkAnswer(2)">Pilihan C</td>
+    </tr>
+    <tr>
+      <td style="height: 50px;"></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="height: 150px;">
+        <div id="message" class="message"></div>
+        <div>
+          <button id="next-btn" onclick="nextStage()" disabled>selanjutnya</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <script>
+    const correctAnswers = [2, 0, 1, 1, 0, 2]; // correct answer index for each stage
+    const choices = [
+      ['belum mau', 'lari-lari', 'fokus'],
+      ['pintu dikunci', 'pintu ditutup', 'pintu dibuka'],
+      ['belok kiri', 'belok kanan', 'duduk'],
+      ['makan aja', 'bayar', 'duduk aja'],
+      ['tidak masuk', 'masuk', 'pipis'],
+      ['pupup', 'minum haus', 'lap tisu']
+    ];
+
+    const descriptions = [
+      'duduk belajar',
+      'pipis pupup',
+      'lobi',
+      'jajan makan',
+      'toilet perempuan',
+      'sudah makan'
+    ];
+
+    let currentStage = 0;
+
+    function updateStage() {
+      document.getElementById('prompt-img').src = `${currentStage + 1}.jpeg`;
+
+      const choiceCells = document.querySelectorAll('.choice');
+      choiceCells.forEach((cell, index) => {
+        cell.textContent = choices[currentStage][index];
+      });
+
+      document.getElementById('description-text').textContent = descriptions[currentStage];
+      document.getElementById('message').textContent = '';
+      document.getElementById('next-btn').disabled = true;
+    }
+
+    function checkAnswer(index) {
+      const messageDiv = document.getElementById('message');
+      if (index === correctAnswers[currentStage]) {
+        messageDiv.textContent = 'benar';
+        messageDiv.className = 'message correct';
+        document.getElementById('next-btn').disabled = false;
+      } else {
+        messageDiv.textContent = 'salah, coba lagi';
+        messageDiv.className = 'message wrong';
+        document.getElementById('next-btn').disabled = true;
+      }
+    }
+
+    function nextStage() {
+      currentStage++;
+      if (currentStage >= choices.length) {
+        alert('sudah selesai, boleh lari-lari');
+        document.getElementById('next-btn').disabled = true;
+        return;
+      }
+      updateStage();
+    }
+
+    // Initialize
+    updateStage();
+  </script>
+</body>
+</html>
